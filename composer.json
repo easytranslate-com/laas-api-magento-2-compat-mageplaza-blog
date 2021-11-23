@@ -12,6 +12,7 @@
     ],
     "require": {
         "easytranslate/m2-connector": "~1.0",
+        "mageplaza/magento-2-blog-extension":"~4.1",
         "php": "~7.3.0||~7.4.0"
     },
     "autoload": {
