@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="mageplaza_blogs" sortOrder="60">
+        <settings>
+            <collapsible>true</collapsible>
+            <label>Mageplaza Blogs</label>
+        </settings>
+        <container name="assign_mageplaza_blogs_to_project_container">
+            <htmlContent name="html_content">
+                <block name="mageplazaBlogs" class="EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\AssignMageplazaBlog"/>
+            </htmlContent>
+        </container>
+    </fieldset>
+</form>

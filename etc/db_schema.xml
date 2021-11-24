@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="easytranslate_project_mageplaza_blog" comment="EasyTranslate Project Mageplaza Blog">
+        <column name="project_id" xsi:type="int" nullable="false" identity="false" unsigned="true" comment="Project ID"/>
+        <column name="blog_id" xsi:type="smallint" padding="6" nullable="false" comment="Mageplaza Blog ID"/>
+        <index referenceId="EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_BLOG_ID" indexType="btree">
+            <column name="blog_id"/>
+        </index>
+<!--        TODO add correct foreign key-->
+<!--        <constraint xsi:type="foreign" referenceId="EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_PROJECT_ID_EASYTRANSLATE_PROJECT_PROJECT_ID" table="easytranslate_project_mageplaza_blog" column="project_id" referenceTable="easytranslate_project" referenceColumn="project_id" onDelete="CASCADE"/>-->
+<!--        <constraint xsi:type="foreign" referenceId="EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_BLOG_ID_MAGEPLAZA_BLOG_BLOG_ID" table="easytranslate_project_mageplaza_blog" column="blog_id" referenceTable="mageplaza_blog_post" referenceColumn="post_id" onDelete="CASCADE"/>-->
+<!--        <constraint xsi:type="primary" referenceId="PRIMARY">-->
+<!--            <column name="project_id"/>-->
+<!--            <column name="blog_id"/>-->
+<!--        </constraint>-->
+    </table>
+</schema>

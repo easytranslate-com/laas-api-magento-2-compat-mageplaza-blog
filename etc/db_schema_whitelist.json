@@ -1,0 +1,16 @@
+{
+    "easytranslate_project_mageplaza_blog": {
+        "column": {
+            "project_id": true,
+            "blog_id": true
+        },
+        "index": {
+            "EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_BLOG_ID": true
+        },
+        "constraint": {
+            "FK_B90BF4A196759B491AC4A5F1966E83D6": true,
+            "FK_8DBFE085CA8EE0924BF12E7059A1BA2D": true,
+            "PRIMARY": true
+        }
+    }
+}
