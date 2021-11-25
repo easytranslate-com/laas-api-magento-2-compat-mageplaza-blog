@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab;
 
+use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\MageplazaPosts;
 use EasyTranslate\Connector\Block\Adminhtml\Project\Tab\AbstractEntity;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget\Grid;
 use Magento\Backend\Block\Widget\Grid\Column;
 use Magento\Backend\Helper\Data;
 use Magento\Framework\Data\Collection as CollectionData;
@@ -33,19 +35,28 @@ class MageplazaBlogs extends AbstractEntity
      */
     private $mageplazaHelper;
 
+    /**
+     * @var MageplazaPosts
+     */
+    private $mageplazaPostsResource;
+
     public function __construct(
         Context $context,
         Data $backendHelper,
         CollectionFactory $collectionFactory,
         ProjectGetter $projectGetter,
         MageplazaHelper $mageplazaHelper,
+        MageplazaPosts $mageplazaPostsResource,
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
         $this->setId('easytranslate_mageplaza_blogs');
-        $this->collectionFactory = $collectionFactory;
-        $this->projectGetter     = $projectGetter;
-        $this->mageplazaHelper   = $mageplazaHelper;
+        $this->setDefaultSort(PostInterface::POST_ID);
+        $this->setUseAjax(true);
+        $this->collectionFactory      = $collectionFactory;
+        $this->projectGetter          = $projectGetter;
+        $this->mageplazaHelper        = $mageplazaHelper;
+        $this->mageplazaPostsResource = $mageplazaPostsResource;
     }
 
     /**
@@ -74,11 +85,12 @@ class MageplazaBlogs extends AbstractEntity
         return $this;
     }
 
-    protected function _prepareCollection()
+    protected function _prepareCollection(): Grid
     {
         /** @var Collection $mageplazaBlogCollection */
         $mageplazaBlogCollection = $this->collectionFactory->create();
-        $mageplazaBlogCollection->addAttributeToSelect(PostInterface::NAME);
+        $mageplazaBlogCollection->addAttributeToSelect(PostInterface::NAME)
+            ->addAttributeToSelect(PostInterface::POST_ID);
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
             // join stores in which blogs have already been added to a project / translated
             $projectMageplazaBlogTable = $mageplazaBlogCollection->getTable('easytranslate_project_mageplaza_blog');
@@ -94,8 +106,8 @@ class MageplazaBlogs extends AbstractEntity
                 ['translated_stores' => 'GROUP_CONCAT(DISTINCT target_store_id)']
             );
         } else {
-            $selectedCmsBlockIds = $this->getSelectedMageplazaBlogIds();
-            $mageplazaBlogCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedCmsBlockIds]);
+            $selectedMageplazaBlogIds = $this->getSelectedMageplazaBlogIds();
+            $mageplazaBlogCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedMageplazaBlogIds]);
         }
         $storeId = (int)$this->getRequest()->getParam('store', 0);
         if ($storeId > 0) {
@@ -152,12 +164,12 @@ class MageplazaBlogs extends AbstractEntity
 
     private function getSelectedMageplazaBlogIds(): array
     {
+        $project        = $this->projectGetter->getProject();
         $mageplazaBlogs = $this->getRequest()->getPost('included_mageplaza_blogs');
         if ($mageplazaBlogs === null) {
-            //TODO implement getMagePlazaBlogs()
-            //            if ($this->projectGetter->getProject()) {
-            //                return $this->projectGetter->getProject()->getMagePlazaBlogs();
-            //            }
+            if ($project) {
+                return $this->mageplazaPostsResource->getMageplazaPosts($project);
+            }
 
             return [];
         }

@@ -5,40 +5,46 @@ declare(strict_types=1);
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project;
 
 use EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab\MageplazaBlogs;
+use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\MageplazaPosts;
 use EasyTranslate\Connector\Block\Adminhtml\Project\AbstractBlock;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\BlockInterface;
 
+/**
+ * @see \EasyTranslate\Connector\Block\Adminhtml\Project\AssignedProducts
+ */
 class AssignMageplazaBlog extends AbstractBlock
 {
+    private const INCLUDED_MAGEPLAZA_BLOGS = 'included_mageplaza_blogs[]';
+
     /**
      * @var MageplazaBlogs
      */
     private $blockGrid;
 
     /**
-     * @var Json
+     * @var SerializerInterface
      */
-    private $jsonEncoder;
+    private $serializer;
+
+    /**
+     * @var MageplazaPosts
+     */
+    private $mageplazaPosts;
 
     public function __construct(
         Context $context,
         ProjectGetter $projectGetter,
-        Json $jsonEncoder,
+        SerializerInterface $serializer,
+        MageplazaPosts $mageplazaPosts,
         array $data = []
     ) {
         parent::__construct($context, $projectGetter, $data);
-        $this->jsonEncoder = $jsonEncoder;
-    }
-
-    private const INCLUDED_MAGEPLAZA_BLOGS = 'included_mageplaza_blogs[]';
-
-    public function getInputName(): string
-    {
-        return 'mageplaza_blogs';
+        $this->serializer     = $serializer;
+        $this->mageplazaPosts = $mageplazaPosts;
     }
 
     /**
@@ -60,11 +66,15 @@ class AssignMageplazaBlog extends AbstractBlock
     {
         $project = $this->projectGetter->getProject();
         if (!$project) {
-            return $this->jsonEncoder->serialize([]);
+            return $this->serializer->serialize([]);
         }
 
-        return '';
-        // return $this->jsonEncoder->serialize($project->getBlogPosts());//TODO
+        return $this->serializer->serialize($this->mageplazaPosts->getMageplazaPosts($project));
+    }
+
+    public function getInputName(): string
+    {
+        return 'mageplaza_blogs';
     }
 
     public function getGridParam(): string
