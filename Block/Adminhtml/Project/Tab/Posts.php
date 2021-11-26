@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab;
 
-use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\MageplazaPosts;
+use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts as PostsResource;
 use EasyTranslate\Connector\Block\Adminhtml\Project\Tab\AbstractEntity;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
@@ -18,7 +18,7 @@ use Mageplaza\Blog\Helper\Data as MageplazaHelper;
 use Mageplaza\Blog\Model\ResourceModel\Post\Collection;
 use Mageplaza\Blog\Model\ResourceModel\Post\CollectionFactory;
 
-class MageplazaBlogs extends AbstractEntity
+class Posts extends AbstractEntity
 {
     /**
      * @var ProjectGetter
@@ -36,9 +36,9 @@ class MageplazaBlogs extends AbstractEntity
     private $mageplazaHelper;
 
     /**
-     * @var MageplazaPosts
+     * @var PostsResource
      */
-    private $mageplazaPostsResource;
+    private $postsResource;
 
     public function __construct(
         Context $context,
@@ -46,17 +46,17 @@ class MageplazaBlogs extends AbstractEntity
         CollectionFactory $collectionFactory,
         ProjectGetter $projectGetter,
         MageplazaHelper $mageplazaHelper,
-        MageplazaPosts $mageplazaPostsResource,
+        PostsResource $postsResource,
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
-        $this->setId('easytranslate_mageplaza_blogs');
+        $this->setId('posts');
         $this->setDefaultSort(PostInterface::POST_ID);
         $this->setUseAjax(true);
-        $this->collectionFactory      = $collectionFactory;
-        $this->projectGetter          = $projectGetter;
-        $this->mageplazaHelper        = $mageplazaHelper;
-        $this->mageplazaPostsResource = $mageplazaPostsResource;
+        $this->collectionFactory = $collectionFactory;
+        $this->projectGetter     = $projectGetter;
+        $this->mageplazaHelper   = $mageplazaHelper;
+        $this->postsResource     = $postsResource;
     }
 
     /**
@@ -67,16 +67,16 @@ class MageplazaBlogs extends AbstractEntity
      */
     protected function _addColumnFilterToCollection($column)
     {
-        // Set custom filter for in blogs flag
-        if ($column->getId() === 'mageplaza_blogs') {
-            $mageplazaBlogIds = $this->getSelectedMageplazaBlogIds();
-            if (empty($mageplazaBlogIds)) {
-                $mageplazaBlogIds = 0;
+        // Set custom filter for in posts flag
+        if ($column->getId() === 'posts') {
+            $postIds = $this->getSelectedPostIds();
+            if (empty($postIds)) {
+                $postIds = 0;
             }
             if ($column->getFilter()->getValue()) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['in' => $mageplazaBlogIds]);
-            } elseif (!empty($mageplazaBlogIds)) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['nin' => $mageplazaBlogIds]);
+                $this->getCollection()->addFieldToFilter('main_table.post_id', ['in' => $postIds]);
+            } elseif (!empty($postIds)) {
+                $this->getCollection()->addFieldToFilter('main_table.post_id', ['nin' => $postIds]);
             }
         } else {
             parent::_addColumnFilterToCollection($column);
@@ -87,33 +87,33 @@ class MageplazaBlogs extends AbstractEntity
 
     protected function _prepareCollection(): Grid
     {
-        /** @var Collection $mageplazaBlogCollection */
-        $mageplazaBlogCollection = $this->collectionFactory->create();
-        $mageplazaBlogCollection->addAttributeToSelect(PostInterface::NAME)
+        /** @var Collection $postsCollection */
+        $postsCollection = $this->collectionFactory->create();
+        $postsCollection->addAttributeToSelect(PostInterface::NAME)
             ->addAttributeToSelect(PostInterface::POST_ID);
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
-            // join stores in which blogs have already been added to a project / translated
-            $projectMageplazaBlogTable = $mageplazaBlogCollection->getTable('easytranslate_project_mageplaza_blog');
-            $projectTargetStoreTable   = $mageplazaBlogCollection->getTable('easytranslate_project_target_store');
-            $mageplazaBlogCollection->getSelect()->joinLeft(
-                ['etpmpb' => $projectMageplazaBlogTable],
-                'etpmpb.blog_id=main_table.post_id',
+            // join stores in which posts have already been added to a project / translated
+            $projectPostsTable       = $postsCollection->getTable('easytranslate_project_posts');
+            $projectTargetStoreTable = $postsCollection->getTable('easytranslate_project_target_store');
+            $postsCollection->getSelect()->joinLeft(
+                ['etpmpb' => $projectPostsTable],
+                'etpmpb.post_id=main_table.post_id',
                 ['project_ids' => 'GROUP_CONCAT(DISTINCT etpmpb.project_id)']
             );
-            $mageplazaBlogCollection->getSelect()->joinLeft(
+            $postsCollection->getSelect()->joinLeft(
                 ['etpts' => $projectTargetStoreTable],
                 'etpts.project_id=etpmpb.project_id',
                 ['translated_stores' => 'GROUP_CONCAT(DISTINCT target_store_id)']
             );
         } else {
-            $selectedMageplazaBlogIds = $this->getSelectedMageplazaBlogIds();
-            $mageplazaBlogCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedMageplazaBlogIds]);
+            $selectedPostIds = $this->getSelectedPostIds();
+            $postsCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedPostIds]);
         }
         $storeId = (int)$this->getRequest()->getParam('store', 0);
         if ($storeId > 0) {
-            $this->mageplazaHelper->addStoreFilter($mageplazaBlogCollection, $storeId);
+            $this->mageplazaHelper->addStoreFilter($postsCollection, $storeId);
         }
-        $this->setCollection($mageplazaBlogCollection);
+        $this->setCollection($postsCollection);
 
         return parent::_prepareCollection();
     }
@@ -121,12 +121,12 @@ class MageplazaBlogs extends AbstractEntity
     protected function _prepareColumns()
     {
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
-            $this->addColumn('mageplaza_posts', [
+            $this->addColumn('posts', [
                 'header_css_class' => 'a-center',
                 'inline_css'       => 'in-project',
                 'type'             => 'checkbox',
-                'name'             => 'mageplaza_posts',
-                'values'           => $this->getSelectedMageplazaBlogIds(),
+                'name'             => 'posts',
+                'values'           => $this->getSelectedPostIds(),
                 'align'            => 'center',
                 'index'            => PostInterface::POST_ID
             ]);
@@ -162,24 +162,24 @@ class MageplazaBlogs extends AbstractEntity
         return parent::_prepareColumns();
     }
 
-    private function getSelectedMageplazaBlogIds(): array
+    private function getSelectedPostIds(): array
     {
-        $project        = $this->projectGetter->getProject();
-        $mageplazaBlogs = $this->getRequest()->getPost('included_mageplaza_blogs');
-        if ($mageplazaBlogs === null) {
+        $project       = $this->projectGetter->getProject();
+        $includedPosts = $this->getRequest()->getPost('included_posts');
+        if ($includedPosts === null) {
             if ($project) {
-                return $this->mageplazaPostsResource->getMageplazaPosts($project);
+                return $this->postsResource->getPosts($project);
             }
 
             return [];
         }
 
-        return explode(',', $mageplazaBlogs);
+        return explode(',', $includedPosts);
     }
 
     public function getGridUrl(): string
     {
-        return $this->getUrl('*/project_mageplazaBlogs/grid', ['_current' => true]);
+        return $this->getUrl('*/project_posts/grid', ['_current' => true]);
     }
 
     /**

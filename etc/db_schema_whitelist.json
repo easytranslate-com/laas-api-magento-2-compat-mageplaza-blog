@@ -1,15 +1,15 @@
 {
-    "easytranslate_project_mageplaza_blog": {
+    "easytranslate_project_posts": {
         "column": {
             "project_id": true,
-            "blog_id": true
+            "post_id": true
         },
         "index": {
-            "EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_BLOG_ID": true
+            "EASYTRANSLATE_PROJECT_POSTS_POST_ID": true
         },
         "constraint": {
-            "FK_B90BF4A196759B491AC4A5F1966E83D6": true,
-            "FK_8DBFE085CA8EE0924BF12E7059A1BA2D": true,
+            "FK_61F0B6EF2ECB677201E9C19B03EC979B": true,
+            "EASYTRANSLATE_PROJECT_POSTS_POST_ID_MAGEPLAZA_BLOG_POST_POST_ID": true,
             "PRIMARY": true
         }
     }

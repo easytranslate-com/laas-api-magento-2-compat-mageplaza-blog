@@ -7,7 +7,7 @@ namespace EasyTranslate\CompatMageplazaBlog\Model\Adminhtml\Source;
 use Magento\Framework\Data\OptionSourceInterface;
 use Mageplaza\Blog\Api\Data\PostInterface;
 
-class MagePlazaBlogAttributes implements OptionSourceInterface
+class PostAttribute implements OptionSourceInterface
 {
     public function toOptionArray(): array
     {

@@ -13,7 +13,7 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\Serialize\SerializerInterface;
 
-class MageplazaPosts extends AbstractDb
+class Posts extends AbstractDb
 {
     protected $_eventPrefix = 'easytranslate_project';
 
@@ -45,23 +45,23 @@ class MageplazaPosts extends AbstractDb
         $this->_init('easytranslate_project', ProjectInterface::PROJECT_ID);
     }
 
-    public function getMageplazaPosts(ProjectModel $project): array
+    public function getPosts(ProjectModel $project): array
     {
         $select = $this->connection->select()
-            ->from($this->getTable('easytranslate_project_mageplaza_blog'), ['blog_id'])
+            ->from($this->getTable('easytranslate_project_posts'), ['post_id'])
             ->where('project_id = :project_id');
         $bind   = ['project_id' => (int)$project->getId()];
 
         return $this->connection->fetchCol($select, $bind);
     }
 
-    public function saveProjectMageplazaPosts(ProjectModel $project): void
+    public function saveProjectPosts(ProjectModel $project): void
     {
-        $projectId  = (int)$project->getId();
-        $newPosts   = null;
-        $blogParams = $this->request->getParam('mageplaza_blogs');
-        if ($blogParams !== null) {
-            foreach ($this->serializer->unserialize($blogParams) as $post) {
+        $projectId = (int)$project->getId();
+        $newPosts  = null;
+        $posts     = $this->request->getParam('mageplaza_selected_posts');
+        if ($posts !== null) {
+            foreach ($this->serializer->unserialize($posts) as $post) {
                 $newPosts[] = (int)$post;
             }
         }
@@ -70,20 +70,20 @@ class MageplazaPosts extends AbstractDb
             return;
         }
         $oldPosts = [];
-        foreach ($this->getMageplazaPosts($project) as $oldPost) {
+        foreach ($this->getPosts($project) as $oldPost) {
             $oldPosts[] = (int)$oldPost;
         }
         if (empty($newPosts) && empty($oldPosts)) {
             return;
         }
 
-        $table  = $this->getTable('easytranslate_project_mageplaza_blog');
+        $table  = $this->getTable('easytranslate_project_posts');
         $insert = array_diff($newPosts, $oldPosts);
         $delete = array_diff($oldPosts, $newPosts);
 
         if (!empty($delete)) {
             $where = [
-                'blog_id IN(?)' => $delete,
+                'post_id IN(?)' => $delete,
                 'project_id=?'  => $projectId
             ];
             $this->connection->delete($table, $where);
@@ -94,7 +94,7 @@ class MageplazaPosts extends AbstractDb
             foreach ($insert as $blogId) {
                 $data[] = [
                     ProjectInterface::PROJECT_ID => $projectId,
-                    'blog_id'                    => (int)$blogId
+                    'post_id'                    => (int)$blogId
                 ];
             }
             $this->connection->insertMultiple($table, $data);

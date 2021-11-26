@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace EasyTranslate\CompatMageplazaBlog\Observer;
 
-use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\MageplazaPosts;
+use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
-class MageplazaPostsObserver implements ObserverInterface
+class AfterProjectSaveObserver implements ObserverInterface
 {
     /**
-     * @var MageplazaPosts
+     * @var Posts
      */
     private $posts;
 
-    public function __construct(MageplazaPosts $posts)
+    public function __construct(Posts $posts)
     {
         $this->posts = $posts;
     }
 
     public function execute(Observer $observer): void
     {
-        $this->posts->saveProjectMageplazaPosts($observer->getData()['object']);
+        $this->posts->saveProjectPosts($observer->getData()['object']);
     }
 }

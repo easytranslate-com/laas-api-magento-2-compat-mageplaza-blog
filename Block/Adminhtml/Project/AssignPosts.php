@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project;
 
-use EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab\MageplazaBlogs;
-use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\MageplazaPosts;
+use EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab\Posts;
+use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts as PostsResource;
 use EasyTranslate\Connector\Block\Adminhtml\Project\AbstractBlock;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
@@ -16,12 +16,12 @@ use Magento\Framework\View\Element\BlockInterface;
 /**
  * @see \EasyTranslate\Connector\Block\Adminhtml\Project\AssignedProducts
  */
-class AssignMageplazaBlog extends AbstractBlock
+class AssignPosts extends AbstractBlock
 {
-    private const INCLUDED_MAGEPLAZA_BLOGS = 'included_mageplaza_blogs[]';
+    private const INCLUDED_POSTS = 'included_posts[]';
 
     /**
-     * @var MageplazaBlogs
+     * @var Posts
      */
     private $blockGrid;
 
@@ -31,20 +31,20 @@ class AssignMageplazaBlog extends AbstractBlock
     private $serializer;
 
     /**
-     * @var MageplazaPosts
+     * @var PostsResource
      */
-    private $mageplazaPosts;
+    private $postsResource;
 
     public function __construct(
         Context $context,
         ProjectGetter $projectGetter,
         SerializerInterface $serializer,
-        MageplazaPosts $mageplazaPosts,
+        PostsResource $postsResource,
         array $data = []
     ) {
         parent::__construct($context, $projectGetter, $data);
-        $this->serializer     = $serializer;
-        $this->mageplazaPosts = $mageplazaPosts;
+        $this->serializer    = $serializer;
+        $this->postsResource = $postsResource;
     }
 
     /**
@@ -54,8 +54,8 @@ class AssignMageplazaBlog extends AbstractBlock
     {
         if (null === $this->blockGrid) {
             $this->blockGrid = $this->getLayout()->createBlock(
-                MageplazaBlogs::class,
-                'project.mageplazablog.grid'
+                Posts::class,
+                'project.easytranslateposts.grid'
             );
         }
 
@@ -69,16 +69,16 @@ class AssignMageplazaBlog extends AbstractBlock
             return $this->serializer->serialize([]);
         }
 
-        return $this->serializer->serialize($this->mageplazaPosts->getMageplazaPosts($project));
+        return $this->serializer->serialize($this->postsResource->getPosts($project));
     }
 
     public function getInputName(): string
     {
-        return 'mageplaza_blogs';
+        return 'mageplaza_selected_posts';
     }
 
     public function getGridParam(): string
     {
-        return self::INCLUDED_MAGEPLAZA_BLOGS;
+        return self::INCLUDED_POSTS;
     }
 }

@@ -3,12 +3,12 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="easytranslate">
-            <group id="mageplaza_attributes" translate="label" type="text" sortOrder="10" showInDefault="1">
-                <label>Mageplaza Blogs</label>
+            <group id="posts_attributes" translate="label" type="text" sortOrder="10" showInDefault="1">
+                <label>Posts</label>
                 <field id="attributes" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1">
                     <label>Attributes</label>
-                    <comment>Select the Mageplaza Blog  attributes, which should be translated</comment>
-                    <source_model>EasyTranslate\CompatMageplazaBlog\Model\Adminhtml\Source\MagePlazaBlogAttributes</source_model>
+                    <comment>Select the posts attributes, which should be translated</comment>
+                    <source_model>EasyTranslate\CompatMageplazaBlog\Model\Adminhtml\Source\PostAttribute</source_model>
                 </field>
             </group>
         </section>
