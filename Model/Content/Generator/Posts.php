@@ -18,6 +18,11 @@ class Posts extends AbstractGenerator
     public const ENTITY_CODE = 'posts';
 
     /**
+     * @var string
+     */
+    protected $idField = 'post_id';
+
+    /**
      * @var CollectionFactory
      */
     private $postCollectionFactory;
@@ -44,7 +49,8 @@ class Posts extends AbstractGenerator
     {
         return $this->postCollectionFactory->create()
             ->addFieldToSelect($this->attributeCodes)
+            ->addFieldToSelect($this->idField)
             ->addFieldToFilter('store_ids', ['in' => (int)$project->getData('source_store_id')])
-            ->addAttributeToFilter('post_id', ['in' => $this->posts->getPosts($project)]);
+            ->addAttributeToFilter($this->idField, ['in' => $this->posts->getPosts($project)]);
     }
 }
