@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="easytranslate">
-            <group id="posts_attributes" translate="label" type="text" sortOrder="10" showInDefault="1">
+            <group id="mageplaza" translate="label" type="text" sortOrder="10" showInDefault="1">
                 <label>Posts</label>
                 <field id="attributes" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1">
                     <label>Attributes</label>

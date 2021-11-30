@@ -29,8 +29,16 @@ class PostAttribute implements OptionSourceInterface
                 'label' => __('Post Content'),
             ],
             [
+                'value' => PostInterface::URL_KEY,
+                'label' => __('Url Key'),
+            ],
+            [
                 'value' => PostInterface::META_TITLE,
                 'label' => __('Meta Title'),
+            ],
+            [
+                'value' => PostInterface::META_KEYWORDS,
+                'label' => __('Meta Keywords'),
             ],
             [
                 'value' => PostInterface::META_DESCRIPTION,

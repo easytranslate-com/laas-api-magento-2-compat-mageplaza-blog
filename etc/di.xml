@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="EasyTranslate\Connector\Model\Content\Generator">
+        <arguments>
+            <argument name="generators" xsi:type="array">
+                <item name="posts" xsi:type="object">EasyTranslate\CompatMageplazaBlog\Model\Content\Generator\Posts</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

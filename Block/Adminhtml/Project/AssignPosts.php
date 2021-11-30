@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project;
 
 use EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab\Posts;
-use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts as PostsResource;
+use EasyTranslate\CompatMageplazaBlog\Model\Posts as PostsModel;
 use EasyTranslate\Connector\Block\Adminhtml\Project\AbstractBlock;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
@@ -31,20 +31,20 @@ class AssignPosts extends AbstractBlock
     private $serializer;
 
     /**
-     * @var PostsResource
+     * @var PostsModel
      */
-    private $postsResource;
+    private $posts;
 
     public function __construct(
         Context $context,
         ProjectGetter $projectGetter,
         SerializerInterface $serializer,
-        PostsResource $postsResource,
+        PostsModel $posts,
         array $data = []
     ) {
         parent::__construct($context, $projectGetter, $data);
-        $this->serializer    = $serializer;
-        $this->postsResource = $postsResource;
+        $this->serializer = $serializer;
+        $this->posts      = $posts;
     }
 
     /**
@@ -69,7 +69,7 @@ class AssignPosts extends AbstractBlock
             return $this->serializer->serialize([]);
         }
 
-        return $this->serializer->serialize($this->postsResource->getPosts($project));
+        return $this->serializer->serialize($this->posts->getPosts($project));
     }
 
     public function getInputName(): string
