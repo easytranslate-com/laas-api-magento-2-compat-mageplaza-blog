@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: extdn/github-actions-m2/magento-phpstan@master
         with:
-          composer_name: easytranslate/m2-connector
+          composer_name: easytranslate/m2-compat-mageplaza-blog
