@@ -116,8 +116,7 @@ class Posts extends AbstractCmsImporter
         // make sure that a new post is created!
         $post->unsetData('post_id');
         $post->unsetData('created_at');
-        $post->setData('store_id', [$targetStoreId]);
-        $post->setData('stores', [$targetStoreId]);
+        $post->setData('store_ids', [$targetStoreId]);
         $this->objects[] = $post;
     }
 }

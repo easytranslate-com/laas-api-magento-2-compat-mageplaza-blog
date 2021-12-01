@@ -4,6 +4,8 @@
         <sequence>
             <module name="EasyTranslate_Connector"/>
             <module name="Magento_Backend"/>
+            <module name="Mageplaza_Blog"/>
+            <module name="Magento_Store"/>
         </sequence>
     </module>
 </config>
