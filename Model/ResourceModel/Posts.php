@@ -6,38 +6,33 @@ namespace EasyTranslate\CompatMageplazaBlog\Model\ResourceModel;
 
 use EasyTranslate\Connector\Api\Data\ProjectInterface;
 use EasyTranslate\Connector\Model\Project as ProjectModel;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Serialize\SerializerInterface;
 
 class Posts extends AbstractDb
 {
-    protected $_eventPrefix = 'easytranslate_project';
-
     /**
      * @var AdapterInterface
      */
     protected $connection;
 
     /**
-     * @var RequestInterface
+     * @var DecoderInterface
      */
-    private $request;
+    private $decoder;
 
     public function __construct(
         Context $context,
         ResourceConnection $resource,
-        RequestInterface $request,
-        SerializerInterface $serializer,
+        DecoderInterface $decoder,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->connection = $resource->getConnection();
-        $this->request    = $request;
-        $this->serializer = $serializer;
+        $this->decoder    = $decoder;
     }
 
     protected function _construct(): void
@@ -48,36 +43,25 @@ class Posts extends AbstractDb
     public function getPosts(ProjectModel $project): array
     {
         $select = $this->connection->select()
-            ->from($this->getTable('easytranslate_project_posts'), ['post_id'])
+            ->from($this->getTable('easytranslate_project_mageplaza_blog_posts'), ['post_id'])
             ->where('project_id = :project_id');
         $bind   = ['project_id' => (int)$project->getId()];
 
         return $this->connection->fetchCol($select, $bind);
     }
 
-    public function saveProjectPosts(ProjectModel $project): void
+    public function saveProjectPosts(ProjectModel $project, array $newPosts): void
     {
         $projectId = (int)$project->getId();
-        $newPosts  = null;
-        $posts     = $this->request->getParam('mageplaza_selected_posts');
-        if ($posts !== null) {
-            foreach ($this->serializer->unserialize($posts) as $post) {
-                $newPosts[] = (int)$post;
-            }
-        }
-
-        if ($newPosts === null) {
-            return;
-        }
-        $oldPosts = [];
         foreach ($this->getPosts($project) as $oldPost) {
             $oldPosts[] = (int)$oldPost;
         }
+        $oldPosts = array_map('intval', $this->getPosts($project));
         if (empty($newPosts) && empty($oldPosts)) {
             return;
         }
 
-        $table  = $this->getTable('easytranslate_project_posts');
+        $table  = $this->getTable('easytranslate_project_mageplaza_blog_posts');
         $insert = array_diff($newPosts, $oldPosts);
         $delete = array_diff($oldPosts, $newPosts);
 

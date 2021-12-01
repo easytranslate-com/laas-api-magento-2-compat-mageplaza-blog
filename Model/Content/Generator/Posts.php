@@ -6,21 +6,23 @@ namespace EasyTranslate\CompatMageplazaBlog\Model\Content\Generator;
 
 use EasyTranslate\CompatMageplazaBlog\Model\Config as CompatConfig;
 use EasyTranslate\CompatMageplazaBlog\Model\Posts as PostsModel;
+use EasyTranslate\Connector\Api\Data\ProjectInterface;
 use EasyTranslate\Connector\Model\Config;
 use EasyTranslate\Connector\Model\Content\Generator\AbstractGenerator;
 use EasyTranslate\Connector\Model\Project as ProjectModel;
 use EasyTranslate\Connector\Model\Staging\VersionManagerFactory;
 use Magento\Framework\Data\Collection\AbstractDb;
+use Mageplaza\Blog\Api\Data\PostInterface;
 use Mageplaza\Blog\Model\ResourceModel\Post\CollectionFactory;
 
 class Posts extends AbstractGenerator
 {
-    public const ENTITY_CODE = 'posts';
+    public const ENTITY_CODE = 'mageplaza_blog_posts';
 
     /**
      * @var string
      */
-    protected $idField = 'post_id';
+    protected $idField = PostInterface::POST_ID;
 
     /**
      * @var CollectionFactory
@@ -50,7 +52,10 @@ class Posts extends AbstractGenerator
         return $this->postCollectionFactory->create()
             ->addFieldToSelect($this->attributeCodes)
             ->addFieldToSelect($this->idField)
-            ->addFieldToFilter('store_ids', ['in' => (int)$project->getData('source_store_id')])
+            ->addFieldToFilter(
+                PostInterface::STORE_IDS,
+                ['in' => (int)$project->getData(ProjectInterface::SOURCE_STORE_ID)]
+            )
             ->addAttributeToFilter($this->idField, ['in' => $this->posts->getPosts($project)]);
     }
 }

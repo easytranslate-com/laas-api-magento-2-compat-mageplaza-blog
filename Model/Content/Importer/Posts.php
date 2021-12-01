@@ -8,6 +8,7 @@ use EasyTranslate\Connector\Model\Content\Importer\AbstractCmsImporter;
 use Magento\Framework\DB\TransactionFactory;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
+use Mageplaza\Blog\Api\Data\PostInterface;
 use Mageplaza\Blog\Model\Post;
 use Mageplaza\Blog\Model\PostFactory;
 use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
@@ -50,11 +51,16 @@ class Posts extends AbstractCmsImporter
         $this->storeManager   = $storeManager;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
     protected function importObject(string $id, array $attributes, int $sourceStoreId, int $targetStoreId): void
     {
-        $post = $this->postCollection->create()->addAttributeToFilter('post_id', ['in' => $id])->getFirstItem();
+        //todo loadBasePost method
+        $post = $this->postCollection->create()->addAttributeToFilter(PostInterface::POST_ID, ['in' => $id])
+            ->getFirstItem();
         /** @var Post $post */
-        $storeIds = (array)$post->getData('store_ids');
+        $storeIds = (array)$post->getData(PostInterface::STORE_IDS);
         if (in_array($targetStoreId, $storeIds, false) && count($storeIds) === 1) {
             $this->handleExistingUniquePost($post, $attributes);
         } elseif (in_array($targetStoreId, $storeIds, false) && count($storeIds) > 1) {
@@ -78,8 +84,7 @@ class Posts extends AbstractCmsImporter
                 return (int)$store->getId();
             }, $allStores);
             $newStoreIds = array_values(array_diff($allStoreIds, [$targetStoreId]));
-            $post->setData('store_id', $newStoreIds);
-            $post->setData('stores', $newStoreIds);
+            $post->setData(PostInterface::STORE_IDS, $newStoreIds);
             $this->postResource->save($post);
         }
 
@@ -95,10 +100,9 @@ class Posts extends AbstractCmsImporter
     private function handleExistingPostWithMultipleStores(Post $post, array $newData, int $targetStoreId): void
     {
         // first remove the current store ID from the existing post, because posts must be unique per store
-        $storeIds    = (array)$post->getData('store_ids');
+        $storeIds    = (array)$post->getData(PostInterface::STORE_IDS);
         $newStoreIds = array_diff($storeIds, [$targetStoreId]);
-        $post->setData('store_ids', $newStoreIds);
-        $post->setData('stores', $newStoreIds);
+        $post->setData(PostInterface::STORE_IDS, $newStoreIds);
         $this->postResource->save($post);
         $this->createNewPostForStore($post, $newData, $targetStoreId);
     }
@@ -114,9 +118,9 @@ class Posts extends AbstractCmsImporter
         $post->addData($basePost->getData());
         $post->addData($newData);
         // make sure that a new post is created!
-        $post->unsetData('post_id');
-        $post->unsetData('created_at');
-        $post->setData('store_ids', [$targetStoreId]);
+        $post->unsetData(PostInterface::POST_ID);
+        $post->unsetData(PostInterface::CREATED_AT);
+        $post->setData(PostInterface::STORE_IDS, [$targetStoreId]);
         $this->objects[] = $post;
     }
 }

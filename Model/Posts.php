@@ -11,6 +11,8 @@ use Magento\Framework\Registry;
 
 class Posts extends AbstractModel
 {
+    protected $_eventPrefix = 'easytranslate_project_mageplaza_blog_posts';
+
     public const POSTS = 'posts';
 
     public function __construct(

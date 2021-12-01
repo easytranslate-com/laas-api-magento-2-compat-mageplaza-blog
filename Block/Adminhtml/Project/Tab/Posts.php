@@ -93,7 +93,7 @@ class Posts extends AbstractEntity
             ->addAttributeToSelect(PostInterface::POST_ID);
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
             // join stores in which posts have already been added to a project / translated
-            $projectPostsTable       = $postsCollection->getTable('easytranslate_project_posts');
+            $projectPostsTable       = $postsCollection->getTable('easytranslate_project_mageplaza_blog_posts');
             $projectTargetStoreTable = $postsCollection->getTable('easytranslate_project_target_store');
             $postsCollection->getSelect()->joinLeft(
                 ['etpmpb' => $projectPostsTable],
@@ -165,7 +165,7 @@ class Posts extends AbstractEntity
     private function getSelectedPostIds(): array
     {
         $project       = $this->projectGetter->getProject();
-        $includedPosts = $this->getRequest()->getPost('included_posts');
+        $includedPosts = $this->getRequest()->getPost('included_mageplaza_posts');
         if ($includedPosts === null) {
             if ($project) {
                 return $this->postsResource->getPosts($project);
@@ -179,7 +179,7 @@ class Posts extends AbstractEntity
 
     public function getGridUrl(): string
     {
-        return $this->getUrl('*/project_posts/grid', ['_current' => true]);
+        return $this->getUrl('easytranslate_mageplaza_blog/project_posts/grid', ['_current' => true]);
     }
 
     /**

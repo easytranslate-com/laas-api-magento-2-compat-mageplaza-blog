@@ -10,7 +10,7 @@ use EasyTranslate\Connector\Block\Adminhtml\Project\AbstractBlock;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Json\EncoderInterface;
 use Magento\Framework\View\Element\BlockInterface;
 
 /**
@@ -18,7 +18,7 @@ use Magento\Framework\View\Element\BlockInterface;
  */
 class AssignPosts extends AbstractBlock
 {
-    private const INCLUDED_POSTS = 'included_posts[]';
+    private const INCLUDED_MAGEPLAZA_POSTS = 'included_mageplaza_posts[]';
 
     /**
      * @var Posts
@@ -26,9 +26,9 @@ class AssignPosts extends AbstractBlock
     private $blockGrid;
 
     /**
-     * @var SerializerInterface
+     * @var EncoderInterface
      */
-    private $serializer;
+    private $jsonEncoder;
 
     /**
      * @var PostsModel
@@ -38,13 +38,13 @@ class AssignPosts extends AbstractBlock
     public function __construct(
         Context $context,
         ProjectGetter $projectGetter,
-        SerializerInterface $serializer,
+        EncoderInterface $jsonEncoder,
         PostsModel $posts,
         array $data = []
     ) {
         parent::__construct($context, $projectGetter, $data);
-        $this->serializer = $serializer;
-        $this->posts      = $posts;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->posts       = $posts;
     }
 
     /**
@@ -66,10 +66,10 @@ class AssignPosts extends AbstractBlock
     {
         $project = $this->projectGetter->getProject();
         if (!$project) {
-            return $this->serializer->serialize([]);
+            return $this->jsonEncoder->encode([]);
         }
 
-        return $this->serializer->serialize($this->posts->getPosts($project));
+        return $this->jsonEncoder->encode($this->posts->getPosts($project));
     }
 
     public function getInputName(): string
@@ -79,6 +79,6 @@ class AssignPosts extends AbstractBlock
 
     public function getGridParam(): string
     {
-        return self::INCLUDED_POSTS;
+        return self::INCLUDED_MAGEPLAZA_POSTS;
     }
 }

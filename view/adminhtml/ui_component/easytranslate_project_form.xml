@@ -3,7 +3,7 @@
     <fieldset name="mageplaza_posts" sortOrder="60">
         <settings>
             <collapsible>true</collapsible>
-            <label>Posts</label>
+            <label>Mageplaza Blog Posts</label>
         </settings>
         <container name="assign_mageplaza_posts_to_project_container">
             <htmlContent name="html_content">

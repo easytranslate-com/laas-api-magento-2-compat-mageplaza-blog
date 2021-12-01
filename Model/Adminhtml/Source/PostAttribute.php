@@ -17,10 +17,6 @@ class PostAttribute implements OptionSourceInterface
                 'label' => __('Post Name'),
             ],
             [
-                'value' => PostInterface::META_KEYWORDS,
-                'label' => __('Meta Keyworks'),
-            ],
-            [
                 'value' => PostInterface::SHORT_DESCRIPTION,
                 'label' => __('Short Description'),
             ],
