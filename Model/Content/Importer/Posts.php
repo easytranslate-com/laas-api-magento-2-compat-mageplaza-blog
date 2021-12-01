@@ -52,7 +52,7 @@ class Posts extends AbstractCmsImporter
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function importObject(string $id, array $attributes, int $sourceStoreId, int $targetStoreId): void
     {
