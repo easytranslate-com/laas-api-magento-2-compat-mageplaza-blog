@@ -56,8 +56,7 @@ class Posts extends AbstractCmsImporter
      */
     protected function importObject(string $id, array $attributes, int $sourceStoreId, int $targetStoreId): void
     {
-        //todo loadBasePost method
-        $post = $this->postCollection->create()->addAttributeToFilter(PostInterface::POST_ID, ['in' => $id])
+        $post = $this->postCollection->create()->addAttributeToFilter(PostInterface::URL_KEY, ['in' => $id])
             ->getFirstItem();
         /** @var Post $post */
         $storeIds = (array)$post->getData(PostInterface::STORE_IDS);
@@ -69,15 +68,15 @@ class Posts extends AbstractCmsImporter
             $this->handleExistingGlobalPost($post, $attributes, $targetStoreId);
         } else {
             // this should rarely happen - only if the post from the source store has been deleted in the meantime
-            $post->setData('identifier', $id);
+            $post->setData(PostInterface::URL_KEY, $id);
             $this->handleNonExistingPost($post, $attributes, $targetStoreId);
         }
     }
 
     private function handleExistingGlobalPost(Post $post, array $newData, int $targetStoreId): void
     {
-        if (!isset($newData['identifier'])
-            || $post['identifier'] === $newData['identifier']) {
+        if (!isset($newData[PostInterface::URL_KEY])
+            || $post[PostInterface::URL_KEY] === $newData[PostInterface::URL_KEY]) {
             // make sure that the URL key is unique by moving the existing global store to the respective store views
             $allStores   = $this->storeManager->getStores();
             $allStoreIds = array_map(static function ($store) {

@@ -18,7 +18,7 @@ use Magento\Framework\View\Element\BlockInterface;
  */
 class AssignPosts extends AbstractBlock
 {
-    private const INCLUDED_MAGEPLAZA_POSTS = 'included_mageplaza_posts[]';
+    private const INCLUDED_MAGEPLAZA_BLOG_POSTS = 'included_mageplaza_blog_posts[]';
 
     /**
      * @var Posts
@@ -79,6 +79,6 @@ class AssignPosts extends AbstractBlock
 
     public function getGridParam(): string
     {
-        return self::INCLUDED_MAGEPLAZA_POSTS;
+        return self::INCLUDED_MAGEPLAZA_BLOG_POSTS;
     }
 }

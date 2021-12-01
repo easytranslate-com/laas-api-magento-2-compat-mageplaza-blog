@@ -9,7 +9,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class Config
 {
-    private const XML_PATH_POSTS_ATTRIBUTES = 'easytranslate/mageplaza_posts/attributes';
+    private const XML_PATH_POSTS_ATTRIBUTES = 'easytranslate/mageplaza_blog_posts/attributes';
 
     /**
      * @var ScopeConfigInterface

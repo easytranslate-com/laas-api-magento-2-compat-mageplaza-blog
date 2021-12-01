@@ -165,7 +165,7 @@ class Posts extends AbstractEntity
     private function getSelectedPostIds(): array
     {
         $project       = $this->projectGetter->getProject();
-        $includedPosts = $this->getRequest()->getPost('included_mageplaza_posts');
+        $includedPosts = $this->getRequest()->getPost('included_mageplaza_blog_posts');
         if ($includedPosts === null) {
             if ($project) {
                 return $this->postsResource->getPosts($project);

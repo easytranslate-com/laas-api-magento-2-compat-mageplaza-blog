@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="easytranslate_project_mageplaza_blog_posts" comment="EasyTranslate Project Posts">
+    <table name="easytranslate_project_mageplaza_blog_posts" comment="EasyTranslate Project Mageplaza Blog Posts">
         <column name="project_id" xsi:type="int" nullable="false" identity="false" unsigned="true" comment="Project ID"/>
         <column name="post_id" xsi:type="int" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
         <index referenceId="EASYTRANSLATE_PROJECT_MAGEPLAZA_BLOG_POSTS_POST_ID" indexType="btree">

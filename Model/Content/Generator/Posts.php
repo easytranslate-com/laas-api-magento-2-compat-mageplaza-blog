@@ -22,7 +22,7 @@ class Posts extends AbstractGenerator
     /**
      * @var string
      */
-    protected $idField = PostInterface::POST_ID;
+    protected $idField = PostInterface::URL_KEY;
 
     /**
      * @var CollectionFactory
@@ -49,6 +49,10 @@ class Posts extends AbstractGenerator
 
     protected function getCollection(ProjectModel $project): AbstractDb
     {
+        $identifiers = $this->postCollectionFactory->create()
+            ->addFieldToFilter('post_id', ['in' => $this->posts->getPosts($project)])
+            ->getColumnValues($this->idField);
+
         return $this->postCollectionFactory->create()
             ->addFieldToSelect($this->attributeCodes)
             ->addFieldToSelect($this->idField)
@@ -56,6 +60,6 @@ class Posts extends AbstractGenerator
                 PostInterface::STORE_IDS,
                 ['in' => (int)$project->getData(ProjectInterface::SOURCE_STORE_ID)]
             )
-            ->addAttributeToFilter($this->idField, ['in' => $this->posts->getPosts($project)]);
+            ->addAttributeToFilter($this->idField, ['in' => $identifiers]);
     }
 }
