@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EasyTranslate\CompatMageplazaBlog\Block\Adminhtml\Project\Tab;
 
+use EasyTranslate\CompatMageplazaBlog\Model\Posts as PostsModel;
 use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts as PostsResource;
 use EasyTranslate\Connector\Block\Adminhtml\Project\Tab\AbstractEntity;
 use EasyTranslate\Connector\Model\Adminhtml\ProjectGetter;
@@ -87,10 +88,9 @@ class Posts extends AbstractEntity
 
     protected function _prepareCollection(): Grid
     {
+        $this->setDefaultFilter([PostsModel::POSTS => 1]);
         /** @var Collection $postsCollection */
         $postsCollection = $this->collectionFactory->create();
-        $postsCollection->addAttributeToSelect(PostInterface::NAME)
-            ->addAttributeToSelect(PostInterface::POST_ID);
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
             // join stores in which posts have already been added to a project / translated
             $projectPostsTable       = $postsCollection->getTable('easytranslate_project_mageplaza_blog_posts');
@@ -105,14 +105,13 @@ class Posts extends AbstractEntity
                 'etpts.project_id=etpmpb.project_id',
                 ['translated_stores' => 'GROUP_CONCAT(DISTINCT target_store_id)']
             );
+            $postsCollection->getSelect()->group('main_table.post_id');
         } else {
             $selectedPostIds = $this->getSelectedPostIds();
             $postsCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedPostIds]);
         }
-        $storeId = (int)$this->getRequest()->getParam('store', 0);
-        if ($storeId > 0) {
-            $this->mageplazaHelper->addStoreFilter($postsCollection, $storeId);
-        }
+        $sourceStoreId = $this->projectGetter->getProject()->getSourceStoreId();
+        $this->mageplazaHelper->addStoreFilter($postsCollection, $sourceStoreId);
         $this->setCollection($postsCollection);
 
         return parent::_prepareCollection();
