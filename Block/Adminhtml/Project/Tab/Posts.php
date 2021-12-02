@@ -175,7 +175,7 @@ class Posts extends AbstractEntity
             'sortable'         => true,
             'index'            => PostInterface::ENABLED,
             'type'             => 'options',
-            'options'          => $this->status->toArray(),
+            'options'          => array_merge(['' => ' '], $this->status->toArray()),
             'header_css_class' => 'col-id',
             'column_css_class' => 'col-id'
         ]);
@@ -183,7 +183,8 @@ class Posts extends AbstractEntity
             'header'           => __('Layout'),
             'index'            => PostInterface::LAYOUT,
             'type'             => 'options',
-            'options'          => $this->pageLayoutBuilder->getPageLayoutsConfig()->getOptions(),
+            'options'          => array_merge(['' => ' '],
+                $this->pageLayoutBuilder->getPageLayoutsConfig()->getOptions()),
             'header_css_class' => 'col-id',
             'column_css_class' => 'col-id'
         ]);
@@ -191,13 +192,13 @@ class Posts extends AbstractEntity
             'header'  => __('In RSS'),
             'index'   => PostInterface::IN_RSS,
             'type'    => 'options',
-            'options' => $this->yesno->toArray()
+            'options' => array_merge(['' => ' '], $this->yesno->toArray())
         ]);
         $this->addColumn(PostInterface::ALLOW_COMMENT, [
             'header'  => __('Allow Comments'),
             'index'   => PostInterface::ALLOW_COMMENT,
             'type'    => 'options',
-            'options' => $this->yesno->toArray()
+            'options' => array_merge(['' => ' '], $this->yesno->toArray())
         ]);
         $this->addColumn(PostInterface::PUBLISH_DATE, [
             'header' => __('Published'),

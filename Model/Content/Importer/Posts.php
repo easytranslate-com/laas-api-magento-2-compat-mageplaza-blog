@@ -6,7 +6,6 @@ namespace EasyTranslate\CompatMageplazaBlog\Model\Content\Importer;
 
 use EasyTranslate\Connector\Model\Content\Importer\AbstractCmsImporter;
 use Magento\Framework\DB\TransactionFactory;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\Blog\Api\Data\PostInterface;
@@ -80,19 +79,11 @@ class Posts extends AbstractCmsImporter
 
     private function loadExistingPost(string $urlKey, int $storeId): Post
     {
-        try {
-            $post = $this->postFactory->create();
-            $post->setData('store_ids', $storeId);
-            $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
+        $post = $this->postFactory->create();
+        $post->setData('store_ids', $storeId);
+        $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
 
-            return $post;
-        } catch (NoSuchEntityException $e) {
-            $post = $this->postFactory->create();
-            /** @var Post $post */
-            $post->setData('store_ids', $storeId);
-
-            return $post;
-        }
+        return $post;
     }
 
     private function handleExistingGlobalPost(Post $post, array $newData, int $targetStoreId): void
