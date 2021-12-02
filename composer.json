@@ -12,10 +12,11 @@
     ],
     "require": {
         "easytranslate/m2-connector": "~1.0",
-        "mageplaza/magento-2-blog-extension":"~4.1",
-        "magento/module-backend": "~102.0",
-        "magento/module-config": "~101.2",
-        "magento/module-store": "~101.1",
+        "magento/framework": "~102.0||~103.0",
+        "magento/module-backend": "~101.0||~102.0",
+        "magento/module-config": "~101.1",
+        "magento/module-store": "~101.0",
+        "mageplaza/magento-2-blog-extension": "~4.1",
         "php": "~7.3.0||~7.4.0"
     },
     "autoload": {
