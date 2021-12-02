@@ -69,7 +69,7 @@ class Posts extends AbstractEntity
     protected function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in posts flag
-        if ($column->getId() === 'posts') {
+        if ($column->getId() === PostsModel::POSTS) {
             $postIds = $this->getSelectedPostIds();
             if (empty($postIds)) {
                 $postIds = 0;
@@ -120,11 +120,11 @@ class Posts extends AbstractEntity
     protected function _prepareColumns()
     {
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
-            $this->addColumn('posts', [
+            $this->addColumn(PostsModel::POSTS, [
                 'header_css_class' => 'a-center',
                 'inline_css'       => 'in-project',
                 'type'             => 'checkbox',
-                'name'             => 'posts',
+                'name'             => PostsModel::POSTS,
                 'values'           => $this->getSelectedPostIds(),
                 'align'            => 'center',
                 'index'            => PostInterface::POST_ID
