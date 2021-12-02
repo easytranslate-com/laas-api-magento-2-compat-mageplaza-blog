@@ -51,7 +51,7 @@ class Posts extends AbstractEntity
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
-        $this->setId('posts');
+        $this->setId('easytranslate_mageplaza_blog_posts');
         $this->setDefaultSort(PostInterface::POST_ID);
         $this->setUseAjax(true);
         $this->collectionFactory = $collectionFactory;
