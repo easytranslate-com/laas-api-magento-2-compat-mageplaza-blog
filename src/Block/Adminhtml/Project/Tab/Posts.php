@@ -22,6 +22,9 @@ use Mageplaza\Blog\Model\Config\Source\AuthorStatus;
 use Mageplaza\Blog\Model\ResourceModel\Post\Collection;
 use Mageplaza\Blog\Model\ResourceModel\Post\CollectionFactory;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Posts extends AbstractEntity
 {
     /**
@@ -59,6 +62,9 @@ class Posts extends AbstractEntity
      */
     private $pageLayoutBuilder;
 
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
         Context $context,
         Data $backendHelper,
