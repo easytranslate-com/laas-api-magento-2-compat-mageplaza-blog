@@ -75,9 +75,9 @@ class Posts extends AbstractEntity
                 $postIds = 0;
             }
             if ($column->getFilter()->getValue()) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['in' => $postIds]);
+                $this->getCollection()->addFieldToFilter('post_id', ['in' => $postIds]);
             } elseif (!empty($postIds)) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['nin' => $postIds]);
+                $this->getCollection()->addFieldToFilter('post_id', ['nin' => $postIds]);
             }
         } else {
             parent::_addColumnFilterToCollection($column);
@@ -108,10 +108,11 @@ class Posts extends AbstractEntity
             $postsCollection->getSelect()->group('main_table.post_id');
         } else {
             $selectedPostIds = $this->getSelectedPostIds();
-            $postsCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedPostIds]);
+            $postsCollection->addFieldToFilter('post_id', ['in' => $selectedPostIds]);
         }
         $sourceStoreId = $this->projectGetter->getProject()->getSourceStoreId();
         $this->mageplazaHelper->addStoreFilter($postsCollection, $sourceStoreId);
+        $postsCollection->addFilterToMap('post_id', 'main_table.post_id');
         $this->setCollection($postsCollection);
 
         return parent::_prepareCollection();
