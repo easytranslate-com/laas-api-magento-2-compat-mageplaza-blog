@@ -20,10 +20,10 @@
     },
     "autoload": {
         "files": [
-            "registration.php"
+            "src/registration.php"
         ],
         "psr-4": {
-            "EasyTranslate\\CompatMageplazaBlog\\": ""
+            "EasyTranslate\\CompatMageplazaBlog\\": "src"
         }
     }
 }
