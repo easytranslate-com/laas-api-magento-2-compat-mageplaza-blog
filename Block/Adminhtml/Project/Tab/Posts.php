@@ -51,7 +51,7 @@ class Posts extends AbstractEntity
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
-        $this->setId('mageplaza_blog_posts');
+        $this->setId('easytranslate_mageplaza_blog_posts');
         $this->setDefaultSort(PostInterface::POST_ID);
         $this->setUseAjax(true);
         $this->collectionFactory = $collectionFactory;
@@ -69,15 +69,15 @@ class Posts extends AbstractEntity
     protected function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in posts flag
-        if ($column->getId() === 'mageplaza_blog_posts') {
+        if ($column->getId() === PostsModel::POSTS) {
             $postIds = $this->getSelectedPostIds();
             if (empty($postIds)) {
                 $postIds = 0;
             }
             if ($column->getFilter()->getValue()) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['in' => $postIds]);
+                $this->getCollection()->addFieldToFilter('post_id', ['in' => $postIds]);
             } elseif (!empty($postIds)) {
-                $this->getCollection()->addFieldToFilter('main_table.post_id', ['nin' => $postIds]);
+                $this->getCollection()->addFieldToFilter('post_id', ['nin' => $postIds]);
             }
         } else {
             parent::_addColumnFilterToCollection($column);
@@ -108,10 +108,11 @@ class Posts extends AbstractEntity
             $postsCollection->getSelect()->group('main_table.post_id');
         } else {
             $selectedPostIds = $this->getSelectedPostIds();
-            $postsCollection->addFieldToFilter('main_table.post_id', ['in' => $selectedPostIds]);
+            $postsCollection->addFieldToFilter('post_id', ['in' => $selectedPostIds]);
         }
         $sourceStoreId = $this->projectGetter->getProject()->getSourceStoreId();
         $this->mageplazaHelper->addStoreFilter($postsCollection, $sourceStoreId);
+        $postsCollection->addFilterToMap('post_id', 'main_table.post_id');
         $this->setCollection($postsCollection);
 
         return parent::_prepareCollection();
@@ -120,11 +121,11 @@ class Posts extends AbstractEntity
     protected function _prepareColumns()
     {
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
-            $this->addColumn('posts', [
+            $this->addColumn(PostsModel::POSTS, [
                 'header_css_class' => 'a-center',
                 'inline_css'       => 'in-project',
                 'type'             => 'checkbox',
-                'name'             => 'posts',
+                'name'             => PostsModel::POSTS,
                 'values'           => $this->getSelectedPostIds(),
                 'align'            => 'center',
                 'index'            => PostInterface::POST_ID
@@ -141,11 +142,11 @@ class Posts extends AbstractEntity
             'header' => __('Name'),
             'index'  => PostInterface::NAME
         ]);
-        $this->addColumn('url_key', [
+        $this->addColumn(PostInterface::URL_KEY, [
             'header' => __('Url Key'),
             'index'  => PostInterface::URL_KEY
         ]);
-        $this->addColumn('short_description', [
+        $this->addColumn(PostInterface::SHORT_DESCRIPTION, [
             'header' => __('Short Description'),
             'index'  => PostInterface::SHORT_DESCRIPTION
         ]);
