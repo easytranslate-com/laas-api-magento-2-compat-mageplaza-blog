@@ -1,9 +1,9 @@
 {
     "name": "easytranslate/m2-compat-mageplaza-blog",
-    "description": "Compatibility module for MagePlaza Blog extension",
+    "description": "Mageplaza Blog compatibility module for the EasyTranslate Magento 2 integration.",
     "type": "magento2-module",
     "license": "OSL-3.0",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Team CustomGento",
@@ -12,9 +12,10 @@
     ],
     "require": {
         "easytranslate/m2-connector": "~1.0",
-        "magento/module-backend": "~102.0",
-        "magento/module-store": "~101.1",
         "mageplaza/magento-2-blog-extension":"~4.1",
+        "magento/module-backend": "~102.0",
+        "magento/module-config": "~101.2",
+        "magento/module-store": "~101.1",
         "php": "~7.3.0||~7.4.0"
     },
     "autoload": {

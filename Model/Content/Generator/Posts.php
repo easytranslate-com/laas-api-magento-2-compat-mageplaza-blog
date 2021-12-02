@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EasyTranslate\CompatMageplazaBlog\Model\Content\Generator;
 
 use EasyTranslate\CompatMageplazaBlog\Model\Config as CompatConfig;
-use EasyTranslate\CompatMageplazaBlog\Model\Content\Generator\Filter\PostsFilter;
+use EasyTranslate\CompatMageplazaBlog\Model\Content\Generator\Filter\Posts as PostsFilter;
 use EasyTranslate\CompatMageplazaBlog\Model\Posts as PostsModel;
 use EasyTranslate\Connector\Api\Data\ProjectInterface;
 use EasyTranslate\Connector\Model\Config;

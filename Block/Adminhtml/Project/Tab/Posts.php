@@ -12,10 +12,13 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Grid;
 use Magento\Backend\Block\Widget\Grid\Column;
 use Magento\Backend\Helper\Data;
+use Magento\Config\Model\Config\Source\Yesno;
 use Magento\Framework\Data\Collection as CollectionData;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Model\PageLayout\Config\BuilderInterface;
 use Mageplaza\Blog\Api\Data\PostInterface;
 use Mageplaza\Blog\Helper\Data as MageplazaHelper;
+use Mageplaza\Blog\Model\Config\Source\AuthorStatus;
 use Mageplaza\Blog\Model\ResourceModel\Post\Collection;
 use Mageplaza\Blog\Model\ResourceModel\Post\CollectionFactory;
 
@@ -41,6 +44,21 @@ class Posts extends AbstractEntity
      */
     private $postsResource;
 
+    /**
+     * @var AuthorStatus
+     */
+    private $status;
+
+    /**
+     * @var Yesno
+     */
+    private $yesno;
+
+    /**
+     * @var BuilderInterface
+     */
+    private $pageLayoutBuilder;
+
     public function __construct(
         Context $context,
         Data $backendHelper,
@@ -48,6 +66,9 @@ class Posts extends AbstractEntity
         ProjectGetter $projectGetter,
         MageplazaHelper $mageplazaHelper,
         PostsResource $postsResource,
+        AuthorStatus $status,
+        Yesno $yesno,
+        BuilderInterface $pageLayoutBuilder,
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
@@ -58,6 +79,9 @@ class Posts extends AbstractEntity
         $this->projectGetter     = $projectGetter;
         $this->mageplazaHelper   = $mageplazaHelper;
         $this->postsResource     = $postsResource;
+        $this->status            = $status;
+        $this->yesno             = $yesno;
+        $this->pageLayoutBuilder = $pageLayoutBuilder;
     }
 
     /**
@@ -146,11 +170,40 @@ class Posts extends AbstractEntity
             'header' => __('Url Key'),
             'index'  => PostInterface::URL_KEY
         ]);
-        $this->addColumn(PostInterface::SHORT_DESCRIPTION, [
-            'header' => __('Short Description'),
-            'index'  => PostInterface::SHORT_DESCRIPTION
+        $this->addColumn(PostInterface::ENABLED, [
+            'header'           => __('Status'),
+            'sortable'         => true,
+            'index'            => PostInterface::ENABLED,
+            'type'             => 'options',
+            'options'          => $this->status->toArray(),
+            'header_css_class' => 'col-id',
+            'column_css_class' => 'col-id'
         ]);
-
+        $this->addColumn(PostInterface::LAYOUT, [
+            'header'           => __('Layout'),
+            'index'            => PostInterface::LAYOUT,
+            'type'             => 'options',
+            'options'          => $this->pageLayoutBuilder->getPageLayoutsConfig()->getOptions(),
+            'header_css_class' => 'col-id',
+            'column_css_class' => 'col-id'
+        ]);
+        $this->addColumn(PostInterface::IN_RSS, [
+            'header'  => __('In RSS'),
+            'index'   => PostInterface::IN_RSS,
+            'type'    => 'options',
+            'options' => $this->yesno->toArray()
+        ]);
+        $this->addColumn(PostInterface::ALLOW_COMMENT, [
+            'header'  => __('Allow Comments'),
+            'index'   => PostInterface::ALLOW_COMMENT,
+            'type'    => 'options',
+            'options' => $this->yesno->toArray()
+        ]);
+        $this->addColumn(PostInterface::PUBLISH_DATE, [
+            'header' => __('Published'),
+            'index'  => PostInterface::PUBLISH_DATE,
+            'type'   => 'datetime'
+        ]);
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {
             $this->addColumn(
                 'translated_stores',

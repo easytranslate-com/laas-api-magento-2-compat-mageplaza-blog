@@ -13,15 +13,9 @@ use Mageplaza\Blog\Api\Data\PostInterface;
 use Mageplaza\Blog\Model\Post;
 use Mageplaza\Blog\Model\PostFactory;
 use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
-use Mageplaza\Blog\Model\ResourceModel\Post\CollectionFactory;
 
 class Posts extends AbstractCmsImporter
 {
-    /**
-     * @var CollectionFactory
-     */
-    private $postCollection;
-
     /**
      * @var PostResource
      */
@@ -39,17 +33,14 @@ class Posts extends AbstractCmsImporter
 
     public function __construct(
         TransactionFactory $transactionFactory,
-        CollectionFactory $postCollection,
         PostResource $postResource,
         PostFactory $postFactory,
         StoreManagerInterface $storeManager
     ) {
         parent::__construct($transactionFactory);
-
-        $this->postCollection = $postCollection;
-        $this->postResource   = $postResource;
-        $this->postFactory    = $postFactory;
-        $this->storeManager   = $storeManager;
+        $this->postResource = $postResource;
+        $this->postFactory  = $postFactory;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -93,9 +84,6 @@ class Posts extends AbstractCmsImporter
             $post = $this->postFactory->create();
             $post->setData('store_ids', $storeId);
             $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
-            if (!$post->getId()) {
-                throw new NoSuchEntityException(__('The post with the "%1" url key doesn\'t exist.', $urlKey));
-            }
 
             return $post;
         } catch (NoSuchEntityException $e) {

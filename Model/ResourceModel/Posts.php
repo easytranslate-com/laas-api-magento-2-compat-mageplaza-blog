@@ -8,7 +8,6 @@ use EasyTranslate\Connector\Api\Data\ProjectInterface;
 use EasyTranslate\Connector\Model\Project as ProjectModel;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 
@@ -19,20 +18,13 @@ class Posts extends AbstractDb
      */
     protected $connection;
 
-    /**
-     * @var DecoderInterface
-     */
-    private $decoder;
-
     public function __construct(
         Context $context,
         ResourceConnection $resource,
-        DecoderInterface $decoder,
         $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->connection = $resource->getConnection();
-        $this->decoder    = $decoder;
     }
 
     protected function _construct(): void

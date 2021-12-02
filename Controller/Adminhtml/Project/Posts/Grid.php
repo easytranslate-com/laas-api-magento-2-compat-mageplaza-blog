@@ -12,6 +12,6 @@ class Grid extends AbstractEntityGrid
 {
     protected function getGridBlock(): AbstractEntity
     {
-        return $this->layoutFactory->create()->createBlock(Posts::class, 'project.easytranslate_posts.grid');
+        return $this->layoutFactory->create()->createBlock(Posts::class, 'project.mageplaza_blog_posts.grid');
     }
 }
