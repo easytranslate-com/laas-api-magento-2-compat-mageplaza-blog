@@ -51,7 +51,7 @@ class Posts extends AbstractEntity
         array $data = []
     ) {
         parent::__construct($context, $backendHelper, $data);
-        $this->setId('posts');
+        $this->setId('mageplaza_blog_posts');
         $this->setDefaultSort(PostInterface::POST_ID);
         $this->setUseAjax(true);
         $this->collectionFactory = $collectionFactory;
@@ -69,7 +69,7 @@ class Posts extends AbstractEntity
     protected function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in posts flag
-        if ($column->getId() === 'posts') {
+        if ($column->getId() === 'mageplaza_blog_posts') {
             $postIds = $this->getSelectedPostIds();
             if (empty($postIds)) {
                 $postIds = 0;
@@ -139,7 +139,15 @@ class Posts extends AbstractEntity
         ]);
         $this->addColumn('title', [
             'header' => __('Name'),
-            'index'  => 'name'
+            'index'  => PostInterface::NAME
+        ]);
+        $this->addColumn('url_key', [
+            'header' => __('Url Key'),
+            'index'  => PostInterface::URL_KEY
+        ]);
+        $this->addColumn('short_description', [
+            'header' => __('Short Description'),
+            'index'  => PostInterface::SHORT_DESCRIPTION
         ]);
 
         if (!$this->projectGetter->getProject() || $this->projectGetter->getProject()->canEditDetails()) {

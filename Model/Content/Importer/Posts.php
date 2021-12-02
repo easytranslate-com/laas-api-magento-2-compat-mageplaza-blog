@@ -6,6 +6,7 @@ namespace EasyTranslate\CompatMageplazaBlog\Model\Content\Importer;
 
 use EasyTranslate\Connector\Model\Content\Importer\AbstractCmsImporter;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\Blog\Api\Data\PostInterface;
@@ -56,9 +57,7 @@ class Posts extends AbstractCmsImporter
      */
     protected function importObject(string $id, array $attributes, int $sourceStoreId, int $targetStoreId): void
     {
-        $post = $this->postCollection->create()->addAttributeToFilter(PostInterface::URL_KEY, ['in' => $id])
-            ->getFirstItem();
-        /** @var Post $post */
+        $post     = $this->loadBasePost($id, $sourceStoreId, $targetStoreId);
         $storeIds = (array)$post->getData(PostInterface::STORE_IDS);
         if (in_array($targetStoreId, $storeIds, false) && count($storeIds) === 1) {
             $this->handleExistingUniquePost($post, $attributes);
@@ -121,5 +120,37 @@ class Posts extends AbstractCmsImporter
         $post->unsetData(PostInterface::CREATED_AT);
         $post->setData(PostInterface::STORE_IDS, [$targetStoreId]);
         $this->objects[] = $post;
+    }
+
+    private function loadBasePost(string $urlKey, int $sourceStoreId, int $targetStoreId): Post
+    {
+        $postFromTargetStore = $this->loadExistingPost($urlKey, $targetStoreId);
+        if ($postFromTargetStore->getId()) {
+            // if there is already a post in the target store, use it as a base
+            return $postFromTargetStore;
+        }
+
+        // otherwise, use the post from the source store as a base
+        return $this->loadExistingPost($urlKey, $sourceStoreId);
+    }
+
+    private function loadExistingPost(string $urlKey, int $storeId): Post
+    {
+        try {
+            $post = $this->postFactory->create();
+            $post->setData('store_ids', $storeId);
+            $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
+            if (!$post->getId()) {
+                throw new NoSuchEntityException(__('The post with the "%1" url key doesn\'t exist.', $urlKey));
+            }
+
+            return $post;
+        } catch (NoSuchEntityException $e) {
+            $post = $this->postFactory->create();
+            /** @var Post $post */
+            $post->setData('store_ids', $storeId);
+
+            return $post;
+        }
     }
 }

@@ -3,14 +3,14 @@
     <type name="EasyTranslate\Connector\Model\Content\Importer">
         <arguments>
             <argument name="importers" xsi:type="array">
-                <item name="posts" xsi:type="object">EasyTranslate\CompatMageplazaBlog\Model\Content\Importer\Posts</item>
+                <item name="mageplaza_blog_posts" xsi:type="object">EasyTranslate\CompatMageplazaBlog\Model\Content\Importer\Posts</item>
             </argument>
         </arguments>
     </type>
     <type name="EasyTranslate\Connector\Model\Content\Generator">
         <arguments>
             <argument name="generators" xsi:type="array">
-                <item name="posts" xsi:type="object">EasyTranslate\CompatMageplazaBlog\Model\Content\Generator\Posts</item>
+                <item name="mageplaza_blog_posts" xsi:type="object">EasyTranslate\CompatMageplazaBlog\Model\Content\Generator\Posts</item>
             </argument>
         </arguments>
     </type>

@@ -39,14 +39,16 @@ class AfterProjectSaveObserver implements ObserverInterface
 
     public function execute(Observer $observer): void
     {
-        $posts    = $this->request->getParam('mageplaza_selected_posts');
-        $newPosts = [];
-        if ($posts === null) {
+        $selectedPosts = $this->request->getParam('mageplaza_selected_posts');
+        if ($selectedPosts === null) {
             return;
         }
-        foreach ($this->decoder->decode($posts) as $post) {
-            $newPosts[] = (int)$post;
+        $posts = $this->decoder->decode($selectedPosts);
+        if (!is_array($posts)) {
+            return;
         }
+        $newPosts = array_map('intval', $posts);
+
         $this->postsResource->saveProjectPosts($observer->getData()['object'], $newPosts);
     }
 }

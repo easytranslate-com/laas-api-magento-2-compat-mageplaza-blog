@@ -53,10 +53,7 @@ class Posts extends AbstractDb
     public function saveProjectPosts(ProjectModel $project, array $newPosts): void
     {
         $projectId = (int)$project->getId();
-        foreach ($this->getPosts($project) as $oldPost) {
-            $oldPosts[] = (int)$oldPost;
-        }
-        $oldPosts = array_map('intval', $this->getPosts($project));
+        $oldPosts  = array_map('intval', $this->getPosts($project));
         if (empty($newPosts) && empty($oldPosts)) {
             return;
         }
