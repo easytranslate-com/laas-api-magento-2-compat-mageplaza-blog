@@ -189,8 +189,10 @@ class Posts extends AbstractEntity
             'header'           => __('Layout'),
             'index'            => PostInterface::LAYOUT,
             'type'             => 'options',
-            'options'          => array_merge(['' => ' '],
-                $this->pageLayoutBuilder->getPageLayoutsConfig()->getOptions()),
+            'options'          => array_merge(
+                ['' => ' '],
+                $this->pageLayoutBuilder->getPageLayoutsConfig()->getOptions()
+            ),
             'header_css_class' => 'col-id',
             'column_css_class' => 'col-id'
         ]);
