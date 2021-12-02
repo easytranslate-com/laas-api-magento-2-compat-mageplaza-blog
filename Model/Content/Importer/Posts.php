@@ -58,7 +58,10 @@ class Posts extends AbstractCmsImporter
     protected function importObject(string $id, array $attributes, int $sourceStoreId, int $targetStoreId): void
     {
         $post     = $this->loadBasePost($id, $sourceStoreId, $targetStoreId);
-        $storeIds = (array)$post->getData(PostInterface::STORE_IDS);
+        $storeIds = $post->getData(PostInterface::STORE_IDS);
+        if (!is_array($storeIds)) {
+            $storeIds = explode(',', $storeIds);
+        }
         if (in_array($targetStoreId, $storeIds, false) && count($storeIds) === 1) {
             $this->handleExistingUniquePost($post, $attributes);
         } elseif (in_array(Store::DEFAULT_STORE_ID, $storeIds, false) && count($storeIds) >= 1) {
@@ -130,7 +133,10 @@ class Posts extends AbstractCmsImporter
     private function handleExistingPostWithMultipleStores(Post $post, array $newData, int $targetStoreId): void
     {
         // first remove the current store ID from the existing post, because posts must be unique per store
-        $storeIds    = (array)$post->getData(PostInterface::STORE_IDS);
+        $storeIds = $post->getData(PostInterface::STORE_IDS);
+        if (!is_array($storeIds)) {
+            $storeIds = explode(',', $storeIds);
+        }
         $newStoreIds = array_diff($storeIds, [$targetStoreId]);
         $post->setData(PostInterface::STORE_IDS, $newStoreIds);
         $this->postResource->save($post);
