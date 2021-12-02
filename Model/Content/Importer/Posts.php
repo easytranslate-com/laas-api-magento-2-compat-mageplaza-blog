@@ -61,10 +61,10 @@ class Posts extends AbstractCmsImporter
         $storeIds = (array)$post->getData(PostInterface::STORE_IDS);
         if (in_array($targetStoreId, $storeIds, false) && count($storeIds) === 1) {
             $this->handleExistingUniquePost($post, $attributes);
-        } elseif (in_array($targetStoreId, $storeIds, false) && count($storeIds) > 1) {
-            $this->handleExistingPostWithMultipleStores($post, $attributes, $targetStoreId);
         } elseif (in_array(Store::DEFAULT_STORE_ID, $storeIds, false) && count($storeIds) >= 1) {
             $this->handleExistingGlobalPost($post, $attributes, $targetStoreId);
+        } elseif (in_array($targetStoreId, $storeIds, false) && count($storeIds) > 1) {
+            $this->handleExistingPostWithMultipleStores($post, $attributes, $targetStoreId);
         } else {
             // this should rarely happen - only if the post from the source store has been deleted in the meantime
             $post->setData(PostInterface::URL_KEY, $id);
