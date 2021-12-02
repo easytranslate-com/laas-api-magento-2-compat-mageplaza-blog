@@ -72,6 +72,38 @@ class Posts extends AbstractCmsImporter
         }
     }
 
+    private function loadBasePost(string $urlKey, int $sourceStoreId, int $targetStoreId): Post
+    {
+        $postFromTargetStore = $this->loadExistingPost($urlKey, $targetStoreId);
+        if ($postFromTargetStore->getId()) {
+            // if there is already a post in the target store, use it as a base
+            return $postFromTargetStore;
+        }
+
+        // otherwise, use the post from the source store as a base
+        return $this->loadExistingPost($urlKey, $sourceStoreId);
+    }
+
+    private function loadExistingPost(string $urlKey, int $storeId): Post
+    {
+        try {
+            $post = $this->postFactory->create();
+            $post->setData('store_ids', $storeId);
+            $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
+            if (!$post->getId()) {
+                throw new NoSuchEntityException(__('The post with the "%1" url key doesn\'t exist.', $urlKey));
+            }
+
+            return $post;
+        } catch (NoSuchEntityException $e) {
+            $post = $this->postFactory->create();
+            /** @var Post $post */
+            $post->setData('store_ids', $storeId);
+
+            return $post;
+        }
+    }
+
     private function handleExistingGlobalPost(Post $post, array $newData, int $targetStoreId): void
     {
         if (!isset($newData[PostInterface::URL_KEY])
@@ -120,37 +152,5 @@ class Posts extends AbstractCmsImporter
         $post->unsetData(PostInterface::CREATED_AT);
         $post->setData(PostInterface::STORE_IDS, [$targetStoreId]);
         $this->objects[] = $post;
-    }
-
-    private function loadBasePost(string $urlKey, int $sourceStoreId, int $targetStoreId): Post
-    {
-        $postFromTargetStore = $this->loadExistingPost($urlKey, $targetStoreId);
-        if ($postFromTargetStore->getId()) {
-            // if there is already a post in the target store, use it as a base
-            return $postFromTargetStore;
-        }
-
-        // otherwise, use the post from the source store as a base
-        return $this->loadExistingPost($urlKey, $sourceStoreId);
-    }
-
-    private function loadExistingPost(string $urlKey, int $storeId): Post
-    {
-        try {
-            $post = $this->postFactory->create();
-            $post->setData('store_ids', $storeId);
-            $this->postResource->load($post, $urlKey, PostInterface::URL_KEY);
-            if (!$post->getId()) {
-                throw new NoSuchEntityException(__('The post with the "%1" url key doesn\'t exist.', $urlKey));
-            }
-
-            return $post;
-        } catch (NoSuchEntityException $e) {
-            $post = $this->postFactory->create();
-            /** @var Post $post */
-            $post->setData('store_ids', $storeId);
-
-            return $post;
-        }
     }
 }
