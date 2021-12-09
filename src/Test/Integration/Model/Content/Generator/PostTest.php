@@ -50,17 +50,18 @@ class PostTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager            = Bootstrap::getObjectManager();
-        $this->projectRepository  = $objectManager->create(ProjectRepositoryInterface::class);
-        $this->postsGenerator     = $objectManager->create(PostsGenerator::class);
-        $this->postFactory        = $objectManager->create(PostFactory::class);
-        $this->postResource       = $objectManager->create(PostResource::class);
-        $this->compatPostResource = $objectManager->create(CompatResourcePost::class);
+        $this->objectManager      = Bootstrap::getObjectManager();
+        $this->projectRepository  = $this->objectManager->create(ProjectRepositoryInterface::class);
+        $this->postsGenerator     = $this->objectManager->create(PostsGenerator::class);
+        $this->postFactory        = $this->objectManager->create(PostFactory::class);
+        $this->postResource       = $this->objectManager->create(PostResource::class);
+        $this->compatPostResource = $this->objectManager->create(CompatResourcePost::class);
     }
 
     /**
      * @magentoDataFixture    loadPostsFixture
      * @magentoDataFixture    loadProjectFixture
+     * @magentoAppIsolation   enabled
      */
     public function testGetContent(): void
     {
@@ -130,7 +131,7 @@ class PostTest extends TestCase
     public static function loadProjectFixture(): void
     {
         include __DIR__
-            . '/../../../../../../../../../vendor/easytranslate/m2-connector/src/Test/Integration/_files/project.php';
+            . '/../../../../../../../../vendor/easytranslate/m2-connector/src/Test/Integration/_files/project.php';
         /** @var Project $project */
         // @phpstan-ignore-next-line
         self::$projectId = (int)$project->getId();
