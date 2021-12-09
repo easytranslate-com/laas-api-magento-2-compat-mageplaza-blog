@@ -16,9 +16,6 @@ use Mageplaza\Blog\Model\PostFactory;
 use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @magentoDbIsolation  enabled
- */
 class PostTest extends TestCase
 {
     /**
@@ -64,7 +61,6 @@ class PostTest extends TestCase
     /**
      * @magentoDataFixture    loadPostsFixture
      * @magentoDataFixture    loadProjectFixture
-     * @magentoAppIsolation   enabled
      */
     public function testGetContent(): void
     {
@@ -108,9 +104,8 @@ class PostTest extends TestCase
         array $includedAttributes,
         array $excludedAttributes
     ): void {
-
         $project = $this->projectRepository->get(self::$projectId);
-        $post    = $this->loadPostPost($urlKey, $storeId);
+        $post    = $this->loadPost($urlKey, $storeId);
         $this->compatPostResource->saveProjectPosts($project, [$post->getId()]);
         $project->setSourceStoreId($storeId);
         $generatedContents = $this->postsGenerator->getContent($project);
@@ -134,7 +129,8 @@ class PostTest extends TestCase
      */
     public static function loadProjectFixture(): void
     {
-        include __DIR__ . '/../../../../../../../Connector/src/Test/Integration/_files/project.php';
+        include __DIR__
+            . '/../../../../../../../../../vendor/easytranslate/m2-connector/src/Test/Integration/_files/project.php';
         /** @var Project $project */
         // @phpstan-ignore-next-line
         self::$projectId = (int)$project->getId();
@@ -145,7 +141,7 @@ class PostTest extends TestCase
         include __DIR__ . '/../../../_files/two_posts_with_same_url_for_different_stores.php';
     }
 
-    private function loadPostPost(string $urlKey, int $storeId): Post
+    private function loadPost(string $urlKey, int $storeId): Post
     {
         $post = $this->postFactory->create();
         $post->setData('store_ids', $storeId);

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
 use Mageplaza\Blog\Model\Post;
+use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
 
-Resolver::getInstance()->requireDataFixture('Magento/Store/_files/second_store.php');
+require __DIR__ . '/../../../../../../../dev/tests/integration/testsuite/Magento/Store/_files/second_store.php';
 
 $objectManager = Bootstrap::getObjectManager();
 
