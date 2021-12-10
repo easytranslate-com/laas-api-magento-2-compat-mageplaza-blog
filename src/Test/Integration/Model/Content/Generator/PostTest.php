@@ -16,9 +16,6 @@ use Mageplaza\Blog\Model\PostFactory;
 use Mageplaza\Blog\Model\ResourceModel\Post as PostResource;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @magentoDbIsolation  enabled
- */
 class PostTest extends TestCase
 {
     /**
@@ -53,12 +50,12 @@ class PostTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager            = Bootstrap::getObjectManager();
-        $this->projectRepository  = $objectManager->create(ProjectRepositoryInterface::class);
-        $this->postsGenerator     = $objectManager->create(PostsGenerator::class);
-        $this->postFactory        = $objectManager->create(PostFactory::class);
-        $this->postResource       = $objectManager->create(PostResource::class);
-        $this->compatPostResource = $objectManager->create(CompatResourcePost::class);
+        $this->objectManager      = Bootstrap::getObjectManager();
+        $this->projectRepository  = $this->objectManager->create(ProjectRepositoryInterface::class);
+        $this->postsGenerator     = $this->objectManager->create(PostsGenerator::class);
+        $this->postFactory        = $this->objectManager->create(PostFactory::class);
+        $this->postResource       = $this->objectManager->create(PostResource::class);
+        $this->compatPostResource = $this->objectManager->create(CompatResourcePost::class);
     }
 
     /**
@@ -108,9 +105,8 @@ class PostTest extends TestCase
         array $includedAttributes,
         array $excludedAttributes
     ): void {
-
         $project = $this->projectRepository->get(self::$projectId);
-        $post    = $this->loadPostPost($urlKey, $storeId);
+        $post    = $this->loadPost($urlKey, $storeId);
         $this->compatPostResource->saveProjectPosts($project, [$post->getId()]);
         $project->setSourceStoreId($storeId);
         $generatedContents = $this->postsGenerator->getContent($project);
@@ -134,7 +130,8 @@ class PostTest extends TestCase
      */
     public static function loadProjectFixture(): void
     {
-        include __DIR__ . '/../../../../../../../Connector/src/Test/Integration/_files/project.php';
+        include __DIR__
+            . '/../../../../../../../../vendor/easytranslate/m2-connector/src/Test/Integration/_files/project.php';
         /** @var Project $project */
         // @phpstan-ignore-next-line
         self::$projectId = (int)$project->getId();
@@ -145,7 +142,7 @@ class PostTest extends TestCase
         include __DIR__ . '/../../../_files/two_posts_with_same_url_for_different_stores.php';
     }
 
-    private function loadPostPost(string $urlKey, int $storeId): Post
+    private function loadPost(string $urlKey, int $storeId): Post
     {
         $post = $this->postFactory->create();
         $post->setData('store_ids', $storeId);
