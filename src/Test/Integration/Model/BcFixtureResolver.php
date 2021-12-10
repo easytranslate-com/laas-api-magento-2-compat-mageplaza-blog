@@ -18,10 +18,10 @@ class BcFixtureResolver
             $fixtureResolverClassName::getInstance()->requireDataFixture($path);
         } else {
             $pathParts = [
-                rtrim(BP, DS),
-                ltrim($relativePathFromRoot, DS)
+                rtrim(BP, DIRECTORY_SEPARATOR),
+                ltrim($relativePathFromRoot, DIRECTORY_SEPARATOR)
             ];
-            require implode(DS, $pathParts);
+            require implode(DIRECTORY_SEPARATOR, $pathParts);
         }
     }
 }
