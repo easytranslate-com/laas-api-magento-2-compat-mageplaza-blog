@@ -3,7 +3,6 @@
     "description": "Mageplaza Blog compatibility extension for the EasyTranslate Magento 2 integration.",
     "type": "magento2-module",
     "license": "OSL-3.0",
-    "version": "1.0.0",
     "authors": [
         {
             "name": "Team CustomGento",
