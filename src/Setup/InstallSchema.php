@@ -14,7 +14,7 @@ class InstallSchema implements InstallSchemaInterface
 {
     /**
      *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @throws Zend_Db_Exception
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context): void
