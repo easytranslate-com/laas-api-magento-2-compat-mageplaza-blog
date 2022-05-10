@@ -13,6 +13,8 @@ use Zend_Db_Exception;
 class InstallSchema implements InstallSchemaInterface
 {
     /**
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @throws Zend_Db_Exception
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context): void
@@ -33,17 +35,21 @@ class InstallSchema implements InstallSchemaInterface
                     'primary'  => true,
                     'padding'  => 10,
                 ], 'Post ID')
-                ->addIndex($setup->getIdxName(
-                    'easytranslate_project_mageplaza_blog_posts',
-                    'post_id',
-                    'btree'),
-                    'post_id')
+                ->addIndex(
+                    $setup->getIdxName(
+                        'easytranslate_project_mageplaza_blog_posts',
+                        'post_id',
+                        'btree'
+                    ),
+                    'post_id'
+                )
                 ->addForeignKey(
                     $setup->getFkName(
                         'easytranslate_project_mageplaza_blog_posts',
                         'project_id',
                         'easytranslate_project',
-                        'project_id'),
+                        'project_id'
+                    ),
                     'project_id',
                     $setup->getTable('easytranslate_project'),
                     'project_id',
@@ -54,7 +60,8 @@ class InstallSchema implements InstallSchemaInterface
                         'easytranslate_project_mageplaza_blog_posts',
                         'post_id',
                         'mageplaza_blog_post',
-                        'post_id'),
+                        'post_id'
+                    ),
                     'post_id',
                     $setup->getTable('mageplaza_blog_post'),
                     'post_id',
