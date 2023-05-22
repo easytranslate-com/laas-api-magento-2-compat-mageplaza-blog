@@ -8,7 +8,7 @@ use EasyTranslate\CompatMageplazaBlog\Model\ResourceModel\Posts as PostsResource
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Json\DecoderInterface;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
 class AfterProjectSaveObserver implements ObserverInterface
 {
@@ -23,18 +23,18 @@ class AfterProjectSaveObserver implements ObserverInterface
     private $request;
 
     /**
-     * @var DecoderInterface
+     * @var JsonSerializer
      */
-    private $decoder;
+    private $jsonSerializer;
 
     public function __construct(
         PostsResource $postsResource,
         RequestInterface $request,
-        DecoderInterface $decoder
+        JsonSerializer $jsonSerializer
     ) {
-        $this->postsResource = $postsResource;
-        $this->request       = $request;
-        $this->decoder       = $decoder;
+        $this->postsResource  = $postsResource;
+        $this->request        = $request;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     public function execute(Observer $observer): void
@@ -43,7 +43,7 @@ class AfterProjectSaveObserver implements ObserverInterface
         if ($selectedPosts === null) {
             return;
         }
-        $posts = $this->decoder->decode($selectedPosts);
+        $posts = $this->jsonSerializer->unserialize($selectedPosts);
         if (!is_array($posts)) {
             return;
         }
