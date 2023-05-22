@@ -81,4 +81,4 @@ on [GitHub](https://github.com/easytranslate-com/laas-api-magento-2-compat-magep
 
 ## Copyright
 
-&copy; 2021 EasyTranslate A/S
+&copy; 2021 - present EasyTranslate A/S
